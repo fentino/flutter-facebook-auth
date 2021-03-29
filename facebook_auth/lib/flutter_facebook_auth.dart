@@ -1,4 +1,5 @@
 import 'package:flutter_facebook_auth_platform_interface/flutter_facebook_auth_platform_interface.dart';
+
 export 'package:flutter_facebook_auth_platform_interface/flutter_facebook_auth_platform_interface.dart';
 export 'package:flutter_facebook_auth_web/flutter_facebook_auth_web.dart';
 
@@ -16,14 +17,18 @@ class FacebookAuth extends FacebookAuthPlatform {
   ///
   /// [loginBehavior] (only Android) use this param to set the UI for the authentication,
   /// like webview, native app, or a dialog.
+  ///
+  /// [isLimited] (only iOS) use limited login instead of tracking login
   @override
   Future<AccessToken> login({
     List<String> permissions = const ['email', 'public_profile'],
     String loginBehavior = LoginBehavior.DIALOG_ONLY,
+    bool isLimited = false,
   }) {
     return FacebookAuthPlatform.instance.login(
       permissions: permissions,
       loginBehavior: loginBehavior,
+      isLimited: isLimited,
     );
   }
 

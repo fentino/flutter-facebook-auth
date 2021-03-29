@@ -25,7 +25,8 @@ class FacebookAuth: NSObject {
         
         case "login":
             let permissions = args?["permissions"] as! [String]
-            self.login(permissions: permissions, flutterResult: result)
+            let isLimited = args?["isLimited"] as! Bool
+            self.login(permissions: permissions, isLimited: isLimited, flutterResult: result)
             
             
         case "isLogged":
@@ -56,25 +57,34 @@ class FacebookAuth: NSObject {
     /*
      use the facebook sdk to request a login with some permissions
      */
-    private func login(permissions: [String], flutterResult: @escaping FlutterResult){
+    private func login(permissions: [String], isLimited: Bool, flutterResult: @escaping FlutterResult){
         
         let isOK = setPendingResult(methodName: "login", flutterResult: flutterResult)
         if(!isOK){
             return
         }
         
+        let permissionssSet = Set(permissions.map {Permission.init(stringLiteral: $0)})
+
+        guard let configuration = LoginConfiguration(permissions: permissionssSet,
+                                                     tracking: isLimited ? .limited : .enabled)
+        else {
+            return
+        }
+
         let viewController: UIViewController = (UIApplication.shared.delegate?.window??.rootViewController)!
         
         
-        loginManager.logIn(permissions: permissions, from: viewController, handler: { (result,error)->Void in
-            if error != nil{
-                self.finishWithError(errorCode: "FAILED", message: error!.localizedDescription)
-            }else if result!.isCancelled{
-                self.finishWithError(errorCode: "CANCELLED", message: "User has cancelled login with facebook")
-            }else{
-                self.finishWithResult(data:self.getAccessToken(accessToken:  result!.token! ))
-            }
-        })
+        loginManager.logIn(viewController: viewController, configuration: configuration) { [unowned self] result in
+                    switch result {
+                    case .cancelled:
+                        self.finishWithError(errorCode: "CANCELLED", message: "User has cancelled login with facebook")
+                    case .failed(let error):
+                        self.finishWithError(errorCode: "FAILED", message: error.localizedDescription)
+                    case .success(_, _, let token):
+                        self.finishWithResult(data:self.getAccessToken(accessToken: token!))
+                    }
+                }
     }
     
     

@@ -1,6 +1,7 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart' show kIsWeb;
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_facebook_auth_example/web_app/web_app.dart';
@@ -71,6 +72,12 @@ class _MyAppState extends State<AuthExample> {
       //   loginBehavior:
       //       LoginBehavior.DIALOG_ONLY, // (only android) show an authentication dialog instead of redirecting to facebook app
       // );
+
+      // isLimited is only supported for iOS devices, for Android it will be ignored
+      // _accessToken = await FacebookAuth.instance.login(
+      //   isLimited: true, // (iOS only) use limited Login instead of tracking login
+      // );
+
       _printCredentials();
       // get the user data
       // by default we get the userId, email,name and picture
@@ -129,7 +136,9 @@ class _MyAppState extends State<AuthExample> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       Text(
-                        _userData != null ? prettyPrint(_userData) : "NO LOGGED",
+                        _userData != null
+                            ? prettyPrint(_userData)
+                            : "NO LOGGED",
                       ),
                       SizedBox(height: 20),
                       _accessToken != null

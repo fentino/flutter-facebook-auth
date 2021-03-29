@@ -10,7 +10,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_facebook_auth_platform_interface: ^1.0.1
+  flutter_facebook_auth_platform_interface:
+    git:
+      url: https://github.com/fentino/flutter-facebook-auth.git
+      ref: 00996f0e980af6709a9c3f7ddcb0af2e58755602
+      path: facebook_auth_platform_interface
   flutter_facebook_auth_web: ^1.0.6
     
 
