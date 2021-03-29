@@ -28,9 +28,12 @@ abstract class FacebookAuthPlatform extends PlatformInterface {
   ///
   /// [loginBehavior] (only Android) use this param to set the UI for the authentication,
   /// like webview, native app, or a dialog.
+  ///
+  /// [isLimited] (only iOS) use limited login instead of tracking login
   Future<AccessToken> login({
     List<String> permissions = const ['email', 'public_profile'],
-    String loginBehavior = LoginBehavior.DIALOG_ONLY,
+    String loginBehavior = LoginBehavior.DIALOG_ONLY, 
+    bool isLimited = false,
   }) async {
     throw UnimplementedError('login() has not been implemented.');
   }

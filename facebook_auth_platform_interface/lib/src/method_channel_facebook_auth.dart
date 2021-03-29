@@ -18,15 +18,19 @@ class FacebookAuth extends FacebookAuthPlatform {
   ///
   /// [loginBehavior] (only Android) use this param to set the UI for the authentication,
   /// like webview, native app, or a dialog.
+  ///
+  /// [isLimited] (only iOS) use limited login instead of tracking login
   @override
   Future<AccessToken> login({
     List<String> permissions = const ['email', 'public_profile'],
     String loginBehavior = LoginBehavior.DIALOG_ONLY,
+    bool isLimited = false,
   }) async {
     try {
       final result = await channel.invokeMethod("login", {
         "permissions": permissions,
         "loginBehavior": loginBehavior,
+        "isLimited" : isLimited,
       });
       return AccessToken.fromJson(Map<String, dynamic>.from(result));
     } on PlatformException catch (e) {
